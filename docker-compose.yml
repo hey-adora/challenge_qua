@@ -1,0 +1,11 @@
+services:
+  web:
+    build: .
+    working_dir: "/code"
+    volumes:
+      - .:/code
+    command:
+      - /bin/ash
+      - -c
+      - |
+        /code/build.sh
