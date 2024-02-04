@@ -27,12 +27,12 @@ namespace qua {
             Time time_middle = time_current + std::chrono::nanoseconds(interval_ns);
             Time time_max = time_current + std::chrono::nanoseconds(2 * interval_ns);
 
-            if (sample.time <= time_middle && sample.time > time_start) {
+            if (sample.time <= time_middle) {
                 current_samples.insert_or_assign(key, std::make_tuple(time_current, sample));
                 continue;
             }
 
-            if (sample.time > time_middle && sample.time < time_max) {
+            if (sample.time > time_middle && sample.time <= time_max) {
                 Measurements *vec = &output[sample.type];
                 vec->emplace_back(time_middle, current_sample.value, current_sample.type);
                 current_samples.insert_or_assign(key, std::make_tuple(time_middle, sample));

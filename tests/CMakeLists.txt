@@ -18,3 +18,11 @@ add_test(Test2, "${CMAKE_SOURCE_DIR}/bin/test2")
 target_link_libraries(test2
         PUBLIC qua
 )
+
+add_executable(test3 test3.cpp
+        helpers/utils.cpp
+        helpers/utils.hpp)
+add_test(Test3, "${CMAKE_SOURCE_DIR}/bin/test3")
+target_link_libraries(test3
+        PUBLIC qua
+)
