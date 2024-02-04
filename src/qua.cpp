@@ -33,11 +33,7 @@ namespace qua {
             }
 
             if (sample.time > time_middle && sample.time < time_max) {
-                if (!output.contains(sample.type)) {
-                    output[sample.type] = Measurements{};
-                }
                 Measurements *vec = &output[sample.type];
-
                 vec->emplace_back(time_middle, current_sample.value, current_sample.type);
                 current_samples.insert_or_assign(key, std::make_tuple(time_middle, sample));
                 continue;
