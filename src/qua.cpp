@@ -23,7 +23,7 @@ namespace qua {
                 continue;
             }
 
-            auto [previous_interval_end, current_sample] = sample_box->second;
+            auto [previous_interval_end, previous_sample] = sample_box->second;
             Time current_interval_end = previous_interval_end + std::chrono::nanoseconds(interval_ns);
             Time next_interval_end = previous_interval_end + std::chrono::nanoseconds(2 * interval_ns);
 
@@ -33,8 +33,8 @@ namespace qua {
             }
 
             if (sample.time > current_interval_end && sample.time <= next_interval_end) {
-                Measurements *vec = &output[sample.type];
-                vec->emplace_back(current_interval_end, current_sample.value, current_sample.type);
+                Measurements *output_vec = &output[sample.type];
+                output_vec->emplace_back(current_interval_end, previous_sample.value, previous_sample.type);
                 sample_boxes.insert_or_assign(key, std::make_tuple(current_interval_end, sample));
                 continue;
             }
@@ -44,8 +44,8 @@ namespace qua {
         for (auto index: sample_boxes) {
             const auto [key, value] = index;
             auto [current, sampled] = value;
-            Measurements *vec = &output[sampled.type];
-            vec->emplace_back(current + std::chrono::nanoseconds(interval_ns), sampled.value, sampled.type);
+            Measurements *output_vec = &output[sampled.type];
+            output_vec->emplace_back(current + std::chrono::nanoseconds(interval_ns), sampled.value, sampled.type);
         }
 
         return output;
