@@ -7,7 +7,7 @@ namespace qua {
         });
 
         MeasurementsMap output = {};
-        std::unordered_map<std::string, std::tuple<Time, Measurement>> current_samples = {};
+        std::unordered_map<std::string, std::tuple<Time, Measurement>> sample_boxes = {};
 
         for (const Measurement &sample: unsampled) {
             std::string key = sample.type;
@@ -16,32 +16,32 @@ namespace qua {
                 continue;
             }
 
-            auto current_sample_pair = current_samples.find(key);
+            auto sample_box = sample_boxes.find(key);
 
-            if (current_sample_pair == nullptr) {
-                current_samples.insert_or_assign(key, std::make_tuple(time_start, sample));
+            if (sample_box == nullptr) {
+                sample_boxes.insert_or_assign(key, std::make_tuple(time_start, sample));
                 continue;
             }
 
-            auto [time_current, current_sample] = current_sample_pair->second;
-            Time time_middle = time_current + std::chrono::nanoseconds(interval_ns);
-            Time time_max = time_current + std::chrono::nanoseconds(2 * interval_ns);
+            auto [previous_interval_end, current_sample] = sample_box->second;
+            Time current_interval_end = previous_interval_end + std::chrono::nanoseconds(interval_ns);
+            Time next_interval_end = previous_interval_end + std::chrono::nanoseconds(2 * interval_ns);
 
-            if (sample.time <= time_middle) {
-                current_samples.insert_or_assign(key, std::make_tuple(time_current, sample));
+            if (sample.time <= current_interval_end) {
+                sample_boxes.insert_or_assign(key, std::make_tuple(previous_interval_end, sample));
                 continue;
             }
 
-            if (sample.time > time_middle && sample.time <= time_max) {
+            if (sample.time > current_interval_end && sample.time <= next_interval_end) {
                 Measurements *vec = &output[sample.type];
-                vec->emplace_back(time_middle, current_sample.value, current_sample.type);
-                current_samples.insert_or_assign(key, std::make_tuple(time_middle, sample));
+                vec->emplace_back(current_interval_end, current_sample.value, current_sample.type);
+                sample_boxes.insert_or_assign(key, std::make_tuple(current_interval_end, sample));
                 continue;
             }
 
         }
 
-        for (auto index: current_samples) {
+        for (auto index: sample_boxes) {
             const auto [key, value] = index;
             auto [current, sampled] = value;
             Measurements *vec = &output[sampled.type];
