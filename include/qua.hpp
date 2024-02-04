@@ -9,8 +9,7 @@
 #include <unordered_map>
 
 namespace qua {
-    typedef std::chrono::time_point<std::chrono::system_clock, std::chrono::duration<long, std::ratio<1, 1000000000>>> Time;
-    typedef std::chrono::duration<long, std::ratio<1, 1000000000>> Duration;
+    using Time = std::chrono::time_point<std::chrono::system_clock, std::chrono::duration<long, std::ratio<1, 1000000000>>>;
 
     namespace measurement_type {
         static std::string temp = "temp";
