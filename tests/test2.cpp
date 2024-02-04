@@ -16,7 +16,7 @@ int main() {
 
     print_measurements(unsampled);
 
-    MeasurementsMap sampled = qua::sample(time_start, unsampled);
+    MeasurementsMap sampled = qua::sample(time_start, unsampled, interval::min * 5);
 
     print_measurements_map(sampled);
 

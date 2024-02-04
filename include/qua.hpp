@@ -18,6 +18,13 @@ namespace qua {
         static std::string spo2 = "spo2";
     }
 
+    namespace interval {
+        static unsigned long ns = 1;
+        static unsigned long ms = 1000000;
+        static unsigned long s = 1000000000;
+        static unsigned long min = 60000000000;
+    }
+
     struct Measurement {
         Time time;
         double value{};
@@ -32,5 +39,5 @@ namespace qua {
     using MeasurementsMap = std::unordered_map<std::string, std::vector<Measurement>>;
     using Measurements = std::vector<Measurement>;
 
-    MeasurementsMap sample(Time time_start, Measurements unsampled);
+    MeasurementsMap sample(Time time_start, Measurements unsampled, unsigned long ns);
 }
